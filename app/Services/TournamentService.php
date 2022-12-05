@@ -39,7 +39,7 @@ class TournamentService
         return $this->games;
     }
 
-    public function play($players)
+    private function play($players)
     {
         if ($players->count() === 2) {
             return $this->getMatchWinner($players->first(), $players->last());
@@ -49,7 +49,7 @@ class TournamentService
         }
     }
 
-    public function getMatchWinner($player1, $player2)
+    private function getMatchWinner($player1, $player2)
     {
         $player1Score = $this->getScore($player1);
         $player2Score = $this->getScore($player2);
@@ -80,7 +80,7 @@ class TournamentService
         return $winner;
     }
 
-    public function getScore($player)
+    private function getScore($player)
     {
         $parameters = $player->pivot;
 
