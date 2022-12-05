@@ -9,6 +9,8 @@ class TournamentService
 {
     protected $tournament;
 
+    protected $games;
+
     public function __construct(Tournament $tournament)
     {
         $this->tournament = $tournament;
@@ -25,7 +27,11 @@ class TournamentService
             throw new \Exception("Players number isn't power of 2", 1);
         }
 
-        return $this->play($this->tournament->players);
+        $this->games = [];
+
+        $this->play($this->tournament->players);
+
+        return $this->games;
     }
 
     public function play($players)
@@ -34,18 +40,29 @@ class TournamentService
             return $this->getMatchWinner($players->first(), $players->last());
         } else {
             $zones = $players->split(2);
-            return $this->getZoneWinner($zones->first(), $zones->last());
+            return $this->getMatchWinner($this->play($zones->first()), $this->play($zones->last()));
         }
     }
 
     public function getMatchWinner($player1, $player2)
     {
-        return $this->getScore($player1) >= $this->getScore($player2) ? $player1 : $player2;
-    }
+        $player1Score = $this->getScore($player1);
+        $player2Score = $this->getScore($player2);
+        $winner = $player1Score >= $player2Score ? $player1 : $player2;
 
-    public function getZoneWinner($zone1, $zone2)
-    {
-        return $this->getMatchWinner($this->play($zone1), $this->play($zone2));
+        $this->games[] = [
+            'player1' => [
+                'name' => $player1->name,
+                'score' => $player1Score,
+            ],
+            'player2' => [
+                'name' => $player2->name,
+                'score' => $player2Score,
+            ],
+            'winner' => $winner->name
+        ];
+
+        return $winner;
     }
 
     public function getScore($player)
