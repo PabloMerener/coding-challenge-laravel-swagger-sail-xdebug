@@ -105,7 +105,11 @@ class TournamentController extends Controller
         try {
             $tournament = new Tournament;
             $tournament->gender = $request->gender;
-            return $tournament->service->run($players);
+            $results = collect($tournament->service->run($players));
+            return [
+                "winner" => $results->last()['winner'],
+                "games" => $results
+            ];
         } catch (\Throwable $th) {
             return response()->json(['error' => $th->getMessage(),], 422);
         }
