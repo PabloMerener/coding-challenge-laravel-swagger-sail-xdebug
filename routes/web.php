@@ -1,6 +1,9 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\PlayerController;
+use App\Http\Controllers\TournamentController;
+use App\Http\Controllers\PlayerTournamentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,3 +19,8 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::resource('players', PlayerController::class);
+Route::resource('tournaments', TournamentController::class);
+Route::post('/tournaments/test', [TournamentController::class, 'test']);
+Route::resource('players-tournaments', PlayerTournamentController::class);
