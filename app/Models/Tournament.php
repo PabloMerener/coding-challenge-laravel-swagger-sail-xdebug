@@ -5,6 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+use App\Services\TournamentService;
+
 class Tournament extends Model
 {
     use HasFactory;
@@ -15,6 +17,13 @@ class Tournament extends Model
      * @var array
      */
     protected $guarded = [];
+
+    public $service;
+
+    public function __construct()
+    {
+        $this->service = new TournamentService($this);
+    }
 
     public function players()
     {
