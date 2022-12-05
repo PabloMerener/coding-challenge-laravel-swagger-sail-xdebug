@@ -39,5 +39,7 @@ class TournamentSeeder extends Seeder
                 $playerParameters
             );
         }
+
+        $rolandGarros77->service->run();
     }
 }

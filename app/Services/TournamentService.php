@@ -3,13 +3,15 @@
 namespace App\Services;
 
 use App\Models\Tournament;
-use App\Models\Player;
+use App\Models\Game;
 
 class TournamentService
 {
     protected $tournament;
 
     protected $games;
+
+    protected $save;
 
     public function __construct(Tournament $tournament)
     {
@@ -23,6 +25,7 @@ class TournamentService
 
     public function run($players = null)
     {
+        $this->save = is_null($players);
         $players = $players ? $players : $this->tournament->players;
 
         if (!self::isPowerOf2($players->count())) {
@@ -63,6 +66,16 @@ class TournamentService
             ],
             'winner' => $winner->name
         ];
+
+        if ($this->save) {
+            Game::create([
+                'tournament_id' => $this->tournament->id,
+                'player1' => $player1->id,
+                'score1' => $player1Score,
+                'player2' => $player2->id,
+                'score2' => $player2Score,
+            ]);
+        }
 
         return $winner;
     }
