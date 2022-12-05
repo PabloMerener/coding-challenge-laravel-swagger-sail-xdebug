@@ -103,7 +103,9 @@ class TournamentController extends Controller
         }
 
         try {
-            return (new Tournament)->service->run($players);
+            $tournament = new Tournament;
+            $tournament->gender = $request->gender;
+            return $tournament->service->run($players);
         } catch (\Throwable $th) {
             return response()->json(['error' => $th->getMessage(),], 422);
         }
