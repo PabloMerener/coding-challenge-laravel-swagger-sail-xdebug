@@ -69,11 +69,14 @@ class TournamentService
 
     public function getScore($player)
     {
-        $playerParameters = $player->pivot;
-        return ($playerParameters->skill_level * 40 +
-            $playerParameters->strength * 20 +
-            $playerParameters->speed * 20 +
-            rand(0, 100) * 20
-        ) / 100;
+        $parameters = $player->pivot;
+
+        $score = $parameters->skill_level * 40 + rand(0, 100) * 20;
+
+        if ($this->tournament->gender === 'male') {
+            return ($score + $parameters->strength * 20 + $parameters->speed * 20) / 100;
+        } else {
+            return ($score + $parameters->reaction_time * 40) / 100;
+        }
     }
 }
