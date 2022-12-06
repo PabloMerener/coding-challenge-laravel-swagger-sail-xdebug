@@ -18,7 +18,6 @@ return new class extends Migration
             $table->string('name', 50);
             $table->enum('gender', ['female', 'male']);
             $table->date('date');
-            $table->timestamps();
         });
     }
 

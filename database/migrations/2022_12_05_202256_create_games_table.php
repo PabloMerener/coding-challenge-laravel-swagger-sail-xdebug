@@ -20,7 +20,6 @@ return new class extends Migration
             $table->decimal('score1', $precision = 5, $scale = 2);
             $table->foreignId('player2')->constrained('players');
             $table->decimal('score2', $precision = 5, $scale = 2);
-            $table->timestamps();
 
             $table->unique(['tournament_id', 'player1', 'player2']);
         });

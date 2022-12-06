@@ -23,7 +23,6 @@ return new class extends Migration
             $table->unsignedSmallInteger('speed')->nullable();
             // Female parameters
             $table->unsignedSmallInteger('reaction_time')->nullable();
-            $table->timestamps();
 
             $table->unique(['tournament_id', 'player_id']);
         });
