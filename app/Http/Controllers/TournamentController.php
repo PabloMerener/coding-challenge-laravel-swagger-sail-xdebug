@@ -114,4 +114,22 @@ class TournamentController extends Controller
             return response()->json(['error' => $th->getMessage(),], 422);
         }
     }
+
+    public function results()
+    {
+        $year = request()->year;
+        $gender = request()->gender;
+
+        $query = Tournament
+            ::whereNotNull('winner') // successfully completed tournaments
+            ->with([
+                'games.player1',
+                'games.player2',
+            ]);
+
+        if ($year) $query->whereYear('date', $year);
+        if ($gender) $query->where('gender', $gender);
+
+        return $query->paginate(8);
+    }
 }

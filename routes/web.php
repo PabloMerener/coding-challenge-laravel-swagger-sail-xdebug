@@ -21,6 +21,6 @@ Route::get('/', function () {
 });
 
 Route::resource('players', PlayerController::class);
-Route::resource('tournaments', TournamentController::class);
 Route::post('/tournaments/test', [TournamentController::class, 'test']);
-Route::resource('players-tournaments', PlayerTournamentController::class);
+Route::get('/tournaments/results', [TournamentController::class, 'results']);
+Route::resource('tournaments', TournamentController::class);
