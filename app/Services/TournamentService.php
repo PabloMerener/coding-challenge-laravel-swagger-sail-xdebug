@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Tournament;
+use App\Models\Player;
 use App\Models\Game;
 
 class TournamentService
@@ -32,9 +33,16 @@ class TournamentService
             throw new \Exception("Players number isn't power of 2", 1);
         }
 
-        $this->games = [];
+        $this->games = collect();
 
         $this->play($players);
+
+        if ($this->save) {
+            $this->tournament->fill([
+                'winner' => Player::whereName($this->games->last()['winner'])
+                    ->firstOrFail()->id
+            ])->save();
+        }
 
         return $this->games;
     }
@@ -55,7 +63,7 @@ class TournamentService
         $player2Score = $this->getScore($player2);
         $winner = $player1Score >= $player2Score ? $player1 : $player2;
 
-        $this->games[] = [
+        $this->games->push([
             'player1' => [
                 'name' => $player1->name,
                 'score' => $player1Score,
@@ -65,7 +73,7 @@ class TournamentService
                 'score' => $player2Score,
             ],
             'winner' => $winner->name
-        ];
+        ]);
 
         if ($this->save) {
             Game::create([

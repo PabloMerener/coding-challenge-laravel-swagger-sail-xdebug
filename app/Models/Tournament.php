@@ -32,6 +32,11 @@ class Tournament extends Model
         $this->service = new TournamentService($this);
     }
 
+    public function winner()
+    {
+        $this->belongsTo(Player::class);
+    }
+
     public function players()
     {
         return $this->belongsToMany(Player::class)
