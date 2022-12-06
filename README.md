@@ -1,66 +1,238 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# tournaments
 
-<p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+## Requirements
 
-## About Laravel
+<a href="/challenge.pdf">Challenge</a>
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+Docker
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Instalation
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+```sh
+git clone https://github.com/PabloMerener/tournament.git && cd tournament
+```
+```sh
+cp .env.example .env
+```
 
-## Learning Laravel
+```sh
+composer install
+```
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+- Sail
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+Liberar los puertos 80 y 3306
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 2000 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+```sh
+vendor/bin/sail up -d
 
-## Laravel Sponsors
+vendor/bin/sail artisan key:generate
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+vendor/bin/sail artisan migrate --seed
 
-### Premium Partners
+```
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
-- **[WebReinvent](https://webreinvent.com/?utm_source=laravel&utm_medium=github&utm_campaign=patreon-sponsors)**
-- **[Lendio](https://lendio.com)**
+- Con base en una lista de jugadores, retorna el resultado del torneo.
 
-## Contributing
+Ejecutar un GET a http://127.0.0.1:80/tournaments/test con el siguiente body
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+```sh
+{
+  "gender": "male",
+  "players": [
+    {
+      "name": "Ilie Năstase",
+      "skill_level": 40,
+      "strength": 40,
+      "speed": 40
+    },
+    {
+      "name": "Brian Gottfried",
+      "skill_level": 90,
+      "strength": 90,
+      "speed": 90
+    }
+  ]
+}
+```
+Se debería obtener un resultado como el siguiente:
 
-## Code of Conduct
+```sh
+{
+  "winner": "Brian Gottfried",
+  "games": [
+    {
+      "player1": {
+        "name": "Ilie Năstase",
+        "score": 32.2
+      },
+      "player2": {
+        "name": "Brian Gottfried",
+        "score": 83.6
+      },
+      "winner": "Brian Gottfried"
+    }
+  ]
+}
+```
+- Consultar el resultado de los torneos finalizados exitosamente filtrando por año y/o género
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+Ejemplo: http://127.0.0.1/tournaments/results?year=1977&gender=male
 
-## Security Vulnerabilities
+Resultado,
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+```sh
+{
+  "current_page": 1,
+  "data": [
+    {
+      "id": 1,
+      "name": "Roland Garros",
+      "gender": "male",
+      "date": "1977-05-23",
+      "winner": 6,
+      "games": [
+        {
+          "id": 1,
+          "tournament_id": 1,
+          "player1": {
+            "id": 1,
+            "name": "Ilie Năstase",
+            "gender": "male"
+          },
+          "score1": "51.00",
+          "player2": {
+            "id": 2,
+            "name": "Brian Gottfried",
+            "gender": "male"
+          },
+          "score2": "87.60"
+        },
+        {
+          "id": 3,
+          "tournament_id": 1,
+          "player1": {
+            "id": 2,
+            "name": "Brian Gottfried",
+            "gender": "male"
+          },
+          "score1": "72.60",
+          "player2": {
+            "id": 3,
+            "name": "Phil Dent",
+            "gender": "male"
+          },
+          "score2": "58.20"
+        },
+        {
+          "id": 7,
+          "tournament_id": 1,
+          "player1": {
+            "id": 2,
+            "name": "Brian Gottfried",
+            "gender": "male"
+          },
+          "score1": "85.40",
+          "player2": {
+            "id": 6,
+            "name": "Guillermo Vilas",
+            "gender": "male"
+          },
+          "score2": "89.80"
+        },
+        {
+          "id": 2,
+          "tournament_id": 1,
+          "player1": {
+            "id": 3,
+            "name": "Phil Dent",
+            "gender": "male"
+          },
+          "score1": "58.80",
+          "player2": {
+            "id": 4,
+            "name": "José Higueras",
+            "gender": "male"
+          },
+          "score2": "32.20"
+        },
+        {
+          "id": 4,
+          "tournament_id": 1,
+          "player1": {
+            "id": 5,
+            "name": "Wojtek Fibak",
+            "gender": "male"
+          },
+          "score1": "50.60",
+          "player2": {
+            "id": 6,
+            "name": "Guillermo Vilas",
+            "gender": "male"
+          },
+          "score2": "94.20"
+        },
+        {
+          "id": 6,
+          "tournament_id": 1,
+          "player1": {
+            "id": 6,
+            "name": "Guillermo Vilas",
+            "gender": "male"
+          },
+          "score1": "97.20",
+          "player2": {
+            "id": 7,
+            "name": "Raúl Ramírez",
+            "gender": "male"
+          },
+          "score2": "71.00"
+        },
+        {
+          "id": 5,
+          "tournament_id": 1,
+          "player1": {
+            "id": 7,
+            "name": "Raúl Ramírez",
+            "gender": "male"
+          },
+          "score1": "72.00",
+          "player2": {
+            "id": 8,
+            "name": "Adriano Panatta",
+            "gender": "male"
+          },
+          "score2": "59.00"
+        }
+      ]
+    }
+  ],
+  "first_page_url": "http://127.0.0.1/tournaments/results?page=1",
+  "from": 1,
+  "last_page": 1,
+  "last_page_url": "http://127.0.0.1/tournaments/results?page=1",
+  "links": [
+    {
+      "url": null,
+      "label": "&laquo; Previous",
+      "active": false
+    },
+    {
+      "url": "http://127.0.0.1/tournaments/results?page=1",
+      "label": "1",
+      "active": true
+    },
+    {
+      "url": null,
+      "label": "Next &raquo;",
+      "active": false
+    }
+  ],
+  "next_page_url": null,
+  "path": "http://127.0.0.1/tournaments/results",
+  "per_page": 8,
+  "prev_page_url": null,
+  "to": 1,
+  "total": 1
+}
+```
