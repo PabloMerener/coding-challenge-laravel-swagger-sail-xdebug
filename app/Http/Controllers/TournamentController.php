@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Player;
 use App\Models\Tournament;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -91,22 +92,23 @@ class TournamentController extends Controller
             return $errors->messages();
         }
 
-        $players = collect();
-        foreach ($request->players as $key => $player) {
-            $players->push((object) [
-                'name' => $player['name'],
-                'pivot' => (object) [
-                    'skill_level' => $player['skill_level'],
-                    'strength' => $player['strength'],
-                    'speed' => $player['speed'],
-                ],
-            ]);
+        $tournament = new Tournament;
+        $tournament->gender = $request->gender;
+
+        $tournament->players = collect();
+        foreach ($request->players as $key => $value) {
+            $player = new Player;
+            $player->name = $value['name'];
+            $player->pivot = (object) [
+                'skill_level' => $value['skill_level'],
+                'strength' => $value['strength'],
+                'speed' => $value['speed'],
+            ];
+            $tournament->players->push($player);
         }
 
         try {
-            $tournament = new Tournament;
-            $tournament->gender = $request->gender;
-            $results = collect($tournament->service->run($players));
+            $results = collect($tournament->service->run());
 
             return [
                 'winner' => $results->last()['winner'],

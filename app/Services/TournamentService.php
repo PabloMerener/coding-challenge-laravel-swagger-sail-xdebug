@@ -21,17 +21,15 @@ class TournamentService
         return ($number & ($number - 1)) === 0;
     }
 
-    public function run($players = null)
+    public function run()
     {
-        $players = $players ? $players : $this->tournament->players;
-
-        if (! self::isPowerOf2($players->count())) {
+        if (! self::isPowerOf2($this->tournament->players->count())) {
             throw new \Exception("Players number isn't power of 2", 1);
         }
 
         $this->games = collect();
 
-        $winner = $this->play($players);
+        $winner = $this->play($this->tournament->players);
 
         if ($this->tournament->exists) {
             $this->tournament->fill(['winner' => $winner->id])->save();
