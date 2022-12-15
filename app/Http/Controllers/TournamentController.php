@@ -111,7 +111,7 @@ class TournamentController extends Controller
             $results = collect($tournament->service->run());
 
             return [
-                'winner' => $results->last()['winner'],
+                'winner' => $tournament->winner,
                 'games' => $results,
             ];
         } catch (\Throwable $th) {

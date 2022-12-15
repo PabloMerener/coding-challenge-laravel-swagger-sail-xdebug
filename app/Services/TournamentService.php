@@ -9,8 +9,6 @@ class TournamentService
 {
     protected $tournament;
 
-    protected $games;
-
     public function __construct(Tournament $tournament)
     {
         $this->tournament = $tournament;
@@ -27,15 +25,15 @@ class TournamentService
             throw new \Exception("Players number isn't power of 2", 1);
         }
 
-        $this->games = collect();
-
         $winner = $this->play($this->tournament->players);
 
         if ($this->tournament->exists) {
             $this->tournament->fill(['winner' => $winner->id])->save();
+        } else {
+            $this->tournament->winner = $winner->name;
         }
 
-        return $this->games;
+        return $this->tournament->games;
     }
 
     private function play($players)
@@ -55,26 +53,18 @@ class TournamentService
         $player2Score = $this->getScore($player2);
         $winner = $player1Score >= $player2Score ? $player1 : $player2;
 
-        $this->games->push([
-            'player1' => [
-                'name' => $player1->name,
-                'score' => $player1Score,
-            ],
-            'player2' => [
-                'name' => $player2->name,
-                'score' => $player2Score,
-            ],
-            'winner' => $winner->name,
+        $game = new Game([
+            'tournament_id' => $this->tournament->id,
+            'player1' => $this->tournament->exists ? $player1->id : $player1->name,
+            'score1' => $player1Score,
+            'player2' => $this->tournament->exists ? $player2->id : $player2->name,
+            'score2' => $player2Score,
         ]);
 
         if ($this->tournament->exists) {
-            Game::create([
-                'tournament_id' => $this->tournament->id,
-                'player1' => $player1->id,
-                'score1' => $player1Score,
-                'player2' => $player2->id,
-                'score2' => $player2Score,
-            ]);
+            $game->save();
+        } else {
+            $this->tournament->games->push($game);
         }
 
         return $winner;
