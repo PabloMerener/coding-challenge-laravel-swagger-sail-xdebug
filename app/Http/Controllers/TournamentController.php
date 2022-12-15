@@ -64,6 +64,7 @@ class TournamentController extends Controller
             return $errors->messages();
         } else {
             $tournament->fill($request->all())->save();
+
             return $tournament;
         }
     }
@@ -92,13 +93,13 @@ class TournamentController extends Controller
 
         $players = collect();
         foreach ($request->players as $key => $player) {
-            $players->push((object)[
-                "name" => $player['name'],
-                "pivot" => (object) [
-                    "skill_level" => $player['skill_level'],
-                    "strength" => $player['strength'],
-                    "speed" => $player['speed'],
-                ]
+            $players->push((object) [
+                'name' => $player['name'],
+                'pivot' => (object) [
+                    'skill_level' => $player['skill_level'],
+                    'strength' => $player['strength'],
+                    'speed' => $player['speed'],
+                ],
             ]);
         }
 
@@ -106,12 +107,13 @@ class TournamentController extends Controller
             $tournament = new Tournament;
             $tournament->gender = $request->gender;
             $results = collect($tournament->service->run($players));
+
             return [
-                "winner" => $results->last()['winner'],
-                "games" => $results
+                'winner' => $results->last()['winner'],
+                'games' => $results,
             ];
         } catch (\Throwable $th) {
-            return response()->json(['error' => $th->getMessage(),], 422);
+            return response()->json(['error' => $th->getMessage()], 422);
         }
     }
 
@@ -120,15 +122,18 @@ class TournamentController extends Controller
         $year = request()->year;
         $gender = request()->gender;
 
-        $query = Tournament
-            ::whereNotNull('winner') // successfully completed tournaments
+        $query = Tournament::whereNotNull('winner') // successfully completed tournaments
             ->with([
                 'games.player1',
                 'games.player2',
             ]);
 
-        if ($year) $query->whereYear('date', $year);
-        if ($gender) $query->where('gender', $gender);
+        if ($year) {
+            $query->whereYear('date', $year);
+        }
+        if ($gender) {
+            $query->where('gender', $gender);
+        }
 
         return $query->paginate(8);
     }

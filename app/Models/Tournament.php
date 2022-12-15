@@ -2,10 +2,9 @@
 
 namespace App\Models;
 
+use App\Services\TournamentService;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-
-use App\Services\TournamentService;
 
 class Tournament extends Model
 {

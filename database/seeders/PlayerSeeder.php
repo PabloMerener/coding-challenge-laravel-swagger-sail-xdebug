@@ -2,9 +2,8 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
-
 use App\Models\Player;
+use Illuminate\Database\Seeder;
 
 class PlayerSeeder extends Seeder
 {
@@ -23,13 +22,13 @@ class PlayerSeeder extends Seeder
             'Wojtek Fibak',
             'Guillermo Vilas',
             'Raúl Ramírez',
-            'Adriano Panatta'
+            'Adriano Panatta',
         ];
 
         foreach ($players as $key => $name) {
             Player::create([
                 'name' => $name,
-                'gender' => 'male'
+                'gender' => 'male',
             ]);
         }
     }

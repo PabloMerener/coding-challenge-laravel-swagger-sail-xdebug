@@ -66,6 +66,7 @@ class PlayerController extends Controller
             return $errors->messages();
         } else {
             $player->fill($request->all())->save();
+
             return $player;
         }
     }
