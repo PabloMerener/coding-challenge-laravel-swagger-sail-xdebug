@@ -3,7 +3,9 @@
 namespace App\Services;
 
 use App\Models\Game;
+use App\Models\Player;
 use App\Models\Tournament;
+use Illuminate\Support\Collection;
 
 class TournamentService
 {
@@ -14,14 +16,27 @@ class TournamentService
         $this->tournament = $tournament;
     }
 
-    public static function isPowerOf2(int $number)
+    /**
+     * isPowerOf2
+     *
+     * @param  int  $number
+     * @return bool
+     */
+    public static function isPowerOf2(int $number): bool
     {
         return ($number & ($number - 1)) === 0;
     }
 
-    public function run()
+    /**
+     * run
+     *
+     * @return Collection
+     */
+    public function run(): Collection
     {
-        if (! self::isPowerOf2($this->tournament->players->count())) {
+        if ($this->tournament->players->count() < 2) {
+            throw new \Exception('Wrong players number', 1);
+        } elseif (! self::isPowerOf2($this->tournament->players->count())) {
             throw new \Exception("Players number isn't power of 2", 1);
         }
 
@@ -36,7 +51,13 @@ class TournamentService
         return $this->tournament->games;
     }
 
-    private function play($players)
+    /**
+     * play
+     *
+     * @param  Collection  $players
+     * @return Player
+     */
+    private function play(Collection $players): Player
     {
         if ($players->count() === 2) {
             return $this->getMatchWinner($players->first(), $players->last());
@@ -47,17 +68,24 @@ class TournamentService
         }
     }
 
-    private function getMatchWinner($player1, $player2)
+    /**
+     * getMatchWinner
+     *
+     * @param  Player  $player1
+     * @param  Player  $player2
+     * @return Player
+     */
+    private function getMatchWinner(Player $player1, Player $player2): Player
     {
         $player1Score = $this->getScore($player1);
         $player2Score = $this->getScore($player2);
         $winner = $player1Score >= $player2Score ? $player1 : $player2;
 
         $game = new Game([
-            'tournament_id' => $this->tournament->id,
-            'player1' => $this->tournament->exists ? $player1->id : $player1->name,
+            ...$this->tournament->exists
+                ? ['player1' => $player1->id, 'player2' => $player2->id, 'tournament_id' => $this->tournament->id]
+                : ['player1' => $player1->name, 'player2' => $player2->name],
             'score1' => $player1Score,
-            'player2' => $this->tournament->exists ? $player2->id : $player2->name,
             'score2' => $player2Score,
         ]);
 
@@ -70,16 +98,22 @@ class TournamentService
         return $winner;
     }
 
-    private function getScore($player)
+    /**
+     * getScore
+     *
+     * @param  Player  $player
+     * @return float
+     */
+    private function getScore(Player $player): float
     {
         $parameters = $player->pivot;
 
         $score = $parameters->skill_level * 40 + rand(0, 100) * 20;
 
-        if ($this->tournament->gender === 'male') {
-            return ($score + $parameters->strength * 20 + $parameters->speed * 20) / 100;
-        } else {
-            return ($score + $parameters->reaction_time * 40) / 100;
-        }
+        $score += $this->tournament->gender === 'male' ?
+            $parameters->strength * 20 + $parameters->speed * 20 :
+            $parameters->reaction_time * 40;
+
+        return $score / 100;
     }
 }
