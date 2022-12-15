@@ -11,8 +11,6 @@ class TournamentService
 
     protected $games;
 
-    protected $save;
-
     public function __construct(Tournament $tournament)
     {
         $this->tournament = $tournament;
@@ -25,7 +23,6 @@ class TournamentService
 
     public function run($players = null)
     {
-        $this->save = is_null($players);
         $players = $players ? $players : $this->tournament->players;
 
         if (! self::isPowerOf2($players->count())) {
@@ -36,7 +33,7 @@ class TournamentService
 
         $winner = $this->play($players);
 
-        if ($this->save) {
+        if ($this->tournament->exists) {
             $this->tournament->fill(['winner' => $winner->id])->save();
         }
 
@@ -72,7 +69,7 @@ class TournamentService
             'winner' => $winner->name,
         ]);
 
-        if ($this->save) {
+        if ($this->tournament->exists) {
             Game::create([
                 'tournament_id' => $this->tournament->id,
                 'player1' => $player1->id,
