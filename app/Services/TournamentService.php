@@ -3,7 +3,6 @@
 namespace App\Services;
 
 use App\Models\Game;
-use App\Models\Player;
 use App\Models\Tournament;
 
 class TournamentService
@@ -35,13 +34,10 @@ class TournamentService
 
         $this->games = collect();
 
-        $this->play($players);
+        $winner = $this->play($players);
 
         if ($this->save) {
-            $this->tournament->fill([
-                'winner' => Player::whereName($this->games->last()['winner'])
-                    ->firstOrFail()->id,
-            ])->save();
+            $this->tournament->fill(['winner' => $winner->id])->save();
         }
 
         return $this->games;
