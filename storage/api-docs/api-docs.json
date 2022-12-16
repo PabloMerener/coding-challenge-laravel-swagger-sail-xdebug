@@ -1,0 +1,93 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "API Tournaments",
+        "version": "1.0"
+    },
+    "servers": [
+        {
+            "url": "http://localhost"
+        }
+    ],
+    "paths": {
+        "/tournaments/test": {
+            "post": {
+                "summary": "Simulate tournament",
+                "operationId": "f46ab3232fa8831c683f71ef06bc54ef",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "gender": {
+                                        "default": "male"
+                                    },
+                                    "players": {
+                                        "type": "array",
+                                        "items": {
+                                            "properties": {
+                                                "name": {
+                                                    "default": "Guillermo Vilas"
+                                                },
+                                                "skill_level": {
+                                                    "type": "number",
+                                                    "format": "float",
+                                                    "default": 90
+                                                },
+                                                "strength": {
+                                                    "type": "number",
+                                                    "format": "float",
+                                                    "default": 90
+                                                },
+                                                "speed": {
+                                                    "type": "number",
+                                                    "format": "float",
+                                                    "default": 90
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Simulate tournament"
+                    },
+                    "default": {
+                        "description": "Error"
+                    }
+                }
+            }
+        },
+        "/tournaments/results": {
+            "get": {
+                "summary": "Get tournament results filtered by gender and/or year",
+                "operationId": "56f47502bea72dc6ef9bc1bf24070776",
+                "parameters": [
+                    {
+                        "name": "gender",
+                        "in": "query"
+                    },
+                    {
+                        "name": "year",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Simulate tournament"
+                    },
+                    "default": {
+                        "description": "Error"
+                    }
+                }
+            }
+        }
+    }
+}

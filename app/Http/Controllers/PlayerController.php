@@ -6,12 +6,32 @@ use App\Models\Player;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
+/**
+ * @OA\Info(title="API Tournaments", version="1.0")
+ *
+ * @OA\Server(url="http://localhost")
+ */
 class PlayerController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
+     */
+
+    /**
+     * @OA\Get(
+     *     path="/players",
+     *     summary="Show players",
+     *     @OA\Response(
+     *         response=200,
+     *         description="Show players description"
+     *     ),
+     *     @OA\Response(
+     *         response="default",
+     *         description="Error"
+     *     )
+     * )
      */
     public function index()
     {

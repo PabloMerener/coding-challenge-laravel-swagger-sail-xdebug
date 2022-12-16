@@ -81,6 +81,35 @@ class TournamentController extends Controller
         return $tournament->delete();
     }
 
+    /**
+     * @OA\Post(
+     *     path="/tournaments/test",
+     *     summary="Simulate tournament",
+     *     @OA\Response(
+     *         response=200,
+     *         description="Simulate tournament"
+     *     ),
+     *     @OA\Response(
+     *         response="default",
+     *         description="Error"
+     *     ),
+     *     @OA\RequestBody(
+     *         required = true,
+     *         @OA\JsonContent(
+     *             @OA\Property(property="gender", default="male"),
+     *                 @OA\Property(property="players", type="array",
+     *                     @OA\Items(
+     *                             @OA\Property(property="name", default="Guillermo Vilas"),
+     *                             @OA\Property(property="skill_level", type="number", format="float", default=90),
+     *                             @OA\Property(property="strength", type="number", format="float", default=90),
+     *                             @OA\Property(property="speed", type="number", format="float", default=90)
+     *                     )
+     *                 )
+     *             )
+     *         )
+     *     )
+     * )
+     */
     public function test(Request $request)
     {
         $errors = Validator::make($request->all(), [
@@ -119,6 +148,28 @@ class TournamentController extends Controller
         }
     }
 
+    /**
+     * @OA\Get(
+     *     path="/tournaments/results",
+     *     summary="Get tournament results filtered by gender and/or year",
+     *     @OA\Parameter(
+     *         name="gender",
+     *         in="query",
+     *     ),
+     *     @OA\Parameter(
+     *         name="year",
+     *         in="query",
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Simulate tournament"
+     *     ),
+     *     @OA\Response(
+     *         response="default",
+     *         description="Error"
+     *     )
+     * )
+     */
     public function results()
     {
         $year = request()->year;
